@@ -2,6 +2,7 @@
 
 namespace Jalameta\Patcher\Console;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 
 class MakeCommand extends MigrateMakeCommand
@@ -11,12 +12,7 @@ class MakeCommand extends MigrateMakeCommand
      *
      * @var string
      */
-    protected $signature = 'make:patch {name : The name of the patch}
-        {--create= : The table to be created}
-        {--table= : The table to migrate}
-        {--path= : The location where the patch file should be created}
-        {--realpath : Indicate any provided patch file paths are pre-resolved absolute paths}
-        {--fullpath : Output the full path of the patch}';
+    protected $signature = 'make:patch {name : The name of the patch}';
 
     /**
      * The console command description.
@@ -24,6 +20,27 @@ class MakeCommand extends MigrateMakeCommand
      * @var string
      */
     protected $description = 'Create a new patch file';
+
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function handle()
+    {
+        // It's possible for the developer to specify the tables to modify in this
+        // schema operation. The developer may also specify if this table needs
+        // to be freshly created so we can create the appropriate migrations.
+        $name = Str::snake(trim($this->input->getArgument('name')));
+
+        // Now we are ready to write the migration out to disk. Once we've written
+        // the migration out, we will dump-autoload for the entire framework to
+        // make sure that the migrations are registered by the class loaders.
+        $this->writeMigration($name, 'patches', false);
+
+        $this->composer->dumpAutoloads();
+    }
 
     /**
      * Write the migration file to disk.

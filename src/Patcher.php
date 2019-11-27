@@ -66,6 +66,8 @@ class Patcher extends Migrator
             $name = $this->getMigrationName($file)
         );
 
+        $migration->setContainer(app())->setCommand(app('command.patcher'));
+
         if ($pretend) {
             return $this->pretendToRun($migration, 'patch');
         }
