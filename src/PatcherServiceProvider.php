@@ -54,7 +54,7 @@ class PatcherServiceProvider extends ServiceProvider
         $this->app->singleton('jps.patcher', function ($app) {
             $repository = $app['jps.patcher.repository'];
 
-            return new Patcher($app['db'], $app['files'], $app['events']);
+            return new Patcher($repository, $app['db'], $app['files'], $app['events']);
         });
     }
 
