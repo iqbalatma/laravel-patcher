@@ -1,0 +1,30 @@
+{
+    "name": "jalameta/jps-patcher",
+    "description": "Laravel patch scripts.",
+    "require": {
+        "illuminate/database": "^6.6"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rifki Alhuraibi",
+            "email": "veelasky@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Jalameta\\Patcher\\": "src"
+        }
+    },
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jalameta\\Patcher\\PatcherServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
