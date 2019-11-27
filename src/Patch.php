@@ -11,5 +11,5 @@ abstract class Patch extends Migration
      *
      * @return void
      */
-    abstract function patch();
+    abstract public function patch();
 }
