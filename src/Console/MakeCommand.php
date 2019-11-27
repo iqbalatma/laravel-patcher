@@ -62,10 +62,6 @@ class MakeCommand extends MigrateMakeCommand
             $name, $this->getMigrationPath(), $table, $create
         );
 
-        if (! $this->option('fullpath')) {
-            $file = pathinfo($file, PATHINFO_FILENAME);
-        }
-
         $this->line("<info>Created Patch:</info> {$file}");
     }
 
@@ -76,12 +72,6 @@ class MakeCommand extends MigrateMakeCommand
      */
     protected function getMigrationPath()
     {
-        if (! is_null($targetPath = $this->input->getOption('path'))) {
-            return ! $this->usingRealPath()
-                ? $this->laravel->basePath().'/'.$targetPath
-                : $targetPath;
-        }
-
         return $this->laravel->basePath().DIRECTORY_SEPARATOR.'patches';
     }
 }
