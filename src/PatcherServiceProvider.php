@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 use Jalameta\Patcher\Console\MakeCommand;
 use Jalameta\Patcher\Console\PatchCommand;
 use Jalameta\Patcher\Console\InstallCommand;
-use Illuminate\Database\Migrations\MigrationCreator;
 
 class PatcherServiceProvider extends ServiceProvider
 {
