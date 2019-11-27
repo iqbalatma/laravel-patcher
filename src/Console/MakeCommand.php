@@ -11,7 +11,12 @@ class MakeCommand extends MigrateMakeCommand
      *
      * @var string
      */
-    protected $signature = 'make:patch {name : The name of the patch}';
+    protected $signature = 'make:patch {name : The name of the patch}
+        {--create= : The table to be created}
+        {--table= : The table to migrate}
+        {--path= : The location where the patch file should be created}
+        {--realpath : Indicate any provided patch file paths are pre-resolved absolute paths}
+        {--fullpath : Output the full path of the patch}';
 
     /**
      * The console command description.
