@@ -1,8 +1,6 @@
 <?php
 
 use Jalameta\Patcher\Patch;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 
 class DummyClass extends Patch
 {
