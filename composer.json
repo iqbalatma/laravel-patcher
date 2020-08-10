@@ -2,7 +2,7 @@
     "name": "jalameta/jps-patcher",
     "description": "Laravel patch scripts.",
     "require": {
-        "illuminate/database": "^6.0|^7.0"
+        "illuminate/database": "^6.0"
     },
     "license": "MIT",
     "authors": [
@@ -24,7 +24,7 @@
             ]
         },
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }
