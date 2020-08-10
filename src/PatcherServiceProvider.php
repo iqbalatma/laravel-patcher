@@ -77,7 +77,7 @@ class PatcherServiceProvider extends ServiceProvider
     protected function registerCreator()
     {
         $this->app->singleton('jps.patcher.creator', function ($app) {
-            return new PatcherCreator($app['files']);
+            return new PatcherCreator($app['files'], $app->basePath('stubs'));
         });
     }
 
