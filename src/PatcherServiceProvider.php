@@ -5,6 +5,7 @@ namespace Jalameta\Patcher;
 use Illuminate\Support\ServiceProvider;
 use Jalameta\Patcher\Console\MakeCommand;
 use Jalameta\Patcher\Console\PatchCommand;
+use Jalameta\Patcher\Console\StatusCommand;
 use Jalameta\Patcher\Console\InstallCommand;
 
 class PatcherServiceProvider extends ServiceProvider
@@ -13,6 +14,7 @@ class PatcherServiceProvider extends ServiceProvider
         'PatcherPatch' => 'command.patcher',
         'PatcherInstall' => 'command.patcher.install',
         'PatcherMake' => 'command.patcher.make',
+        'PatcherStatus' => 'command.patcher.status',
     ];
 
     /**
@@ -124,6 +126,18 @@ class PatcherServiceProvider extends ServiceProvider
             $composer = $app['composer'];
 
             return new MakeCommand($creator, $composer);
+        });
+    }
+
+    /**
+     * Register status command
+     *
+     * @return void
+     */
+    protected function registerPatcherStatusCommand()
+    {
+        $this->app->singleton('command.patcher.status', function ($app) {
+            return new StatusCommand($app['jps.patcher']);
         });
     }
 
