@@ -14,7 +14,7 @@ class StatusCommand extends MigrationStatusCommand
     {
         return $this->migrator->usingConnection($this->option('database'), function () {
             if (! $this->migrator->repositoryExists()) {
-                $this->error('Migration table not found.');
+                $this->error('Patcher table not found.');
 
                 return 1;
             }
@@ -26,7 +26,7 @@ class StatusCommand extends MigrationStatusCommand
             if (count($patches = $this->getStatusFor($ran, $batches)) > 0) {
                 $this->table(['Ran?', 'Patch', 'Batch'], $patches);
             } else {
-                $this->error('No migrations found');
+                $this->error('No patch found');
             }
         });
     }
