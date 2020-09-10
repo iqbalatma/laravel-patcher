@@ -4,6 +4,8 @@ namespace Jalameta\Patcher\Console;
 
 use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
+use Illuminate\Database\SQLiteConnection;
+use Illuminate\Database\SqlServerConnection;
 
 class PatchCommand extends MigrateCommand
 {
@@ -85,5 +87,36 @@ class PatchCommand extends MigrateCommand
     protected function getMigrationPath()
     {
         return $this->laravel->basePath().DIRECTORY_SEPARATOR.'patches';
+    }
+
+    protected function loadSchemaState()
+    {
+        $connection = $this->migrator->resolveConnection($this->option('database'));
+
+        // First, we will make sure that the connection supports schema loading and that
+        // the schema file exists before we proceed any further. If not, we will just
+        // continue with the standard migration operation as normal without errors.
+        if ($connection instanceof SQLiteConnection ||
+            $connection instanceof SqlServerConnection ||
+            ! is_file($path = $this->schemaPath($connection))) {
+            return;
+        }
+
+        $this->line('<info>Loading stored patches:</info> '.$path);
+
+        $startTime = microtime(true);
+
+        // Since the schema file will create the "migrations" table and reload it to its
+        // proper state, we need to delete it here so we don't get an error that this
+        // table already exists when the stored database schema file gets executed.
+        $this->migrator->deleteRepository();
+
+        $connection->getSchemaState()->handleOutputUsing(function ($type, $buffer) {
+            $this->output->write($buffer);
+        })->load($path);
+
+        $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+
+        $this->line('<info>Loaded stored patches.</info> ('.$runTime.'ms)');
     }
 }

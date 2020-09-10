@@ -2,6 +2,7 @@
 
 namespace Jalameta\Patcher;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Jalameta\Patcher\Console\MakeCommand;
 use Jalameta\Patcher\Console\PatchCommand;
@@ -148,8 +149,8 @@ class PatcherServiceProvider extends ServiceProvider
      */
     protected function registerPatcherPatchCommand()
     {
-        $this->app->singleton('command.patcher', function ($app) {
-            return new PatchCommand($app['jps.patcher']);
+        $this->app->singleton('command.patcher', function (Application $app) {
+            return new PatchCommand($app->make('jps.patcher'), $app->make('events'));
         });
     }
 }
