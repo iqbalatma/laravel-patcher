@@ -1,3 +1,3 @@
 LARAVEL PATCHER 
 --
-A (migration like) patcher for production hot update.
+A (migration like) patcher for a smoldering production update.
