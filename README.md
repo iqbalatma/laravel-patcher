@@ -50,9 +50,11 @@ for creating new patch you just need to run these following command
 ```shell script
 php artisan make:patch what_do_you_want_to_patch
 ```
-wait, do you feels familiar huh?, we do too. 
-This library using laravel migration under the hood.
-after that, you will see those file in `patches` folder. Those file will be like:
+> wait, do you feels familiar huh?, we do too.
+The truth is, this package is extending laravel migration.<br>
+>
+after run those command, you will see new file in `patches` folder. 
+Those file will be like:
 ```php
 <?php
 
