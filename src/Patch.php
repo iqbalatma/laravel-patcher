@@ -23,6 +23,21 @@ abstract class Patch extends Migration
     protected $container;
 
     /**
+     * Logger.
+     *
+     * @var \Illuminate\Log\Logger
+     */
+    protected $logger;
+
+    /**
+     * Patch constructor.
+     */
+    public function __construct()
+    {
+        $this->logger = app('log')->get('patcher');
+    }
+
+    /**
      * Run patch script.
      *
      * @return void

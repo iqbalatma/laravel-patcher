@@ -3,9 +3,9 @@
 namespace Jalameta\Patcher\Console;
 
 use Illuminate\Console\ConfirmableTrait;
-use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Database\SQLiteConnection;
 use Illuminate\Database\SqlServerConnection;
+use Illuminate\Database\Console\Migrations\MigrateCommand;
 
 class PatchCommand extends MigrateCommand
 {
