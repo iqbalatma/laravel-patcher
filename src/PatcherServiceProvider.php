@@ -2,12 +2,15 @@
 
 namespace Jalameta\Patcher;
 
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Log\Logger;
+use Monolog\Logger as Monolog;
+use Monolog\Handler\StreamHandler;
 use Illuminate\Support\ServiceProvider;
 use Jalameta\Patcher\Console\MakeCommand;
 use Jalameta\Patcher\Console\PatchCommand;
 use Jalameta\Patcher\Console\StatusCommand;
 use Jalameta\Patcher\Console\InstallCommand;
+use Illuminate\Contracts\Foundation\Application;
 
 class PatcherServiceProvider extends ServiceProvider
 {
@@ -32,6 +35,8 @@ class PatcherServiceProvider extends ServiceProvider
         $this->registerCreator();
 
         $this->registerCommands($this->commands);
+
+        $this->registerLogger();
     }
 
     /**
@@ -44,6 +49,26 @@ class PatcherServiceProvider extends ServiceProvider
         return array_merge([
             'jps.patcher', 'jps.patcher.repository', 'jps.patcher.creator',
         ], array_values($this->commands));
+    }
+
+    /**
+     * Register logger.
+     *
+     * @return void
+     */
+    protected function registerLogger()
+    {
+        $this->app['log']->extend('patcher', function ($app, $config) {
+            $handler = new StreamHandler(
+                $config['path'] ?? $this->app->storagePath().'/logs/patches.log',
+                Monolog::INFO
+            );
+
+            return new Logger(
+                new Monolog('patcher'),
+                $this->app['events']
+            );
+        });
     }
 
     /**
@@ -131,7 +156,7 @@ class PatcherServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register status command
+     * Register status command.
      *
      * @return void
      */
