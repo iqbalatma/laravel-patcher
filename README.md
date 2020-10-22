@@ -3,6 +3,7 @@ LARAVEL PATCHER
 *A (migration like) patcher for a smoldering production update.* <br>
 
 [![Total Downloads](https://img.shields.io/packagist/dt/jalameta/jps-patcher.svg?style=flat-square)](https://packagist.org/packages/jalameta/jps-patcher)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jalameta/laravel-patcher/tests?label=tests)
 
 Already tested on: 
 * Laravel: 6.* | 7.\* | 8.\* 
