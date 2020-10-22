@@ -3,8 +3,8 @@
 namespace Jalameta\Patcher\Console;
 
 use Illuminate\Console\ConfirmableTrait;
-use Illuminate\Database\Events\SchemaLoaded;
 use Illuminate\Database\SQLiteConnection;
+use Illuminate\Database\Events\SchemaLoaded;
 use Illuminate\Database\SqlServerConnection;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 
