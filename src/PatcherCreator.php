@@ -19,9 +19,10 @@ class PatcherCreator extends MigrationCreator
     /**
      * Get the migration stub file.
      *
-     * @param  string|null  $table
-     * @param  bool  $create
+     * @param string|null $table
+     * @param bool $create
      * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function getStub($table, $create)
     {

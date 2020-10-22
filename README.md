@@ -2,6 +2,8 @@ LARAVEL PATCHER
 --
 *A (migration like) patcher for a smoldering production update.* <br>
 
+[![Total Downloads](https://img.shields.io/packagist/dt/jalameta/jps-patcher.svg?style=flat-square)](https://packagist.org/packages/jalameta/jps-patcher)
+
 Already tested on: 
 * Laravel: 6.* | 7.\* | 8.\* 
 
@@ -18,13 +20,11 @@ do either of this methods below.
 ```shell script
 composer require jalameta/jps-patcher
 ``` 
-* adding to `composer.json`
+* adding `"jalameta/jps-patcher": "^2.0"` to `composer.json`
 ```json
 {
   "require": {
-    ...
-    "jalameta/jps-patcher": "^2.0",
-    ...
+    "jalameta/jps-patcher": "^2.0"
   }
 }
 ```
