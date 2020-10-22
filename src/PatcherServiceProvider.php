@@ -62,10 +62,20 @@ class PatcherServiceProvider extends ServiceProvider
      */
     protected function registerLogger()
     {
-        $this->app['config']->set('logging.channels.'.self::$LOG_CHANNEL, [
-            'driver' => self::LOG_DRIVER_NAME,
-            'path' => $this->app->storagePath().DIRECTORY_SEPARATOR.'logs'.DIRECTORY_SEPARATOR.'patches.log'
-        ]);
+        /**
+         * @var $config \Illuminate\Config\Repository
+         */
+        $config = $this->app['config'];
+        $key = 'logging.channels.'.self::$LOG_CHANNEL;
+
+        // check if specified log channel declared in logging.php
+        // if there is not declaration we will declare it here.
+        if (! $config->has($key)) {
+            $config->set($key, [
+                'driver' => self::LOG_DRIVER_NAME,
+                'path' => $this->app->storagePath().DIRECTORY_SEPARATOR.'logs'.DIRECTORY_SEPARATOR.'patches.log'
+            ]);
+        }
 
         $this->app['log']->extend(self::LOG_DRIVER_NAME, function ($app, $config) {
             $handler = new StreamHandler(
