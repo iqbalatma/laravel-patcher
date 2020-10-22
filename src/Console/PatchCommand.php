@@ -4,6 +4,7 @@ namespace Jalameta\Patcher\Console;
 
 use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Database\SQLiteConnection;
+use Illuminate\Database\Events\SchemaLoaded;
 use Illuminate\Database\SqlServerConnection;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 
@@ -18,8 +19,9 @@ class PatchCommand extends MigrateCommand
      */
     protected $signature = 'patcher:run {--database= : The database connection to use}
                 {--force : Force the operation to run when in production}
+                {--schema-path= : The path to a schema dump file}
                 {--pretend : Dump the SQL queries that would be run}
-                {--step : Force the migrations to be run so they can be rolled back individually}';
+                {--step : Force the patches to be run}';
 
     /**
      * The console command description.
@@ -31,24 +33,28 @@ class PatchCommand extends MigrateCommand
     /**
      * Execute the console command.
      *
-     * @return void
+     * @return int
      */
     public function handle()
     {
         if (! $this->confirmToProceed()) {
-            return;
+            return 1;
         }
 
-        $this->prepareDatabase();
+        $this->migrator->usingConnection($this->option('database'), function () {
+            $this->prepareDatabase();
 
-        // Next, we will check to see if a path option has been defined. If it has
-        // we will use the path relative to the root of this installation folder
-        // so that migrations may be run for any path within the applications.
-        $this->migrator->setOutput($this->output)
-            ->run($this->getMigrationPaths(), [
-                'pretend' => $this->option('pretend'),
-                'step' => $this->option('step'),
-            ]);
+            // Next, we will check to see if a path option has been defined. If it has
+            // we will use the path relative to the root of this installation folder
+            // so that migrations may be run for any path within the applications.
+            $this->migrator->setOutput($this->output)
+                ->run($this->getMigrationPaths(), [
+                    'pretend' => $this->option('pretend'),
+                    'step' => $this->option('step'),
+                ]);
+        });
+
+        return 0;
     }
 
     /**
@@ -58,12 +64,14 @@ class PatchCommand extends MigrateCommand
      */
     protected function prepareDatabase()
     {
-        $this->migrator->setConnection($this->option('database'));
-
         if (! $this->migrator->repositoryExists()) {
             $this->call('patcher:install', array_filter([
                 '--database' => $this->option('database'),
             ]));
+        }
+
+        if (! $this->migrator->hasRunAnyMigrations() && ! $this->option('pretend')) {
+            $this->loadSchemaState();
         }
     }
 
@@ -116,6 +124,13 @@ class PatchCommand extends MigrateCommand
         })->load($path);
 
         $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+
+        // Finally, we will fire an event that this schema has been loaded so developers
+        // can perform any post schema load tasks that are necessary in listeners for
+        // this event, which may seed the database tables with some necessary data.
+        $this->dispatcher->dispatch(
+            new SchemaLoaded($connection, $path)
+        );
 
         $this->line('<info>Loaded stored patches.</info> ('.$runTime.'ms)');
     }

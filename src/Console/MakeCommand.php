@@ -54,10 +54,6 @@ class MakeCommand extends MigrateMakeCommand
      */
     protected function writeMigration($name, $table, $create)
     {
-        if (! $this->creator->getFilesystem()->isDirectory($this->getMigrationPath())) {
-            $this->creator->getFilesystem()->makeDirectory($this->getMigrationPath(), 0755, true);
-        }
-
         $file = $this->creator->create(
             $name, $this->getMigrationPath(), $table, $create
         );

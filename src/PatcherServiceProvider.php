@@ -16,7 +16,7 @@ class PatcherServiceProvider extends ServiceProvider
 {
     const LOG_DRIVER_NAME = 'patcher';
 
-    static $LOG_CHANNEL = 'patcher';
+    public static $LOG_CHANNEL = 'patcher';
 
     protected $commands = [
         'PatcherPatch' => 'command.patcher',
@@ -73,7 +73,7 @@ class PatcherServiceProvider extends ServiceProvider
         if (! $config->has($key)) {
             $config->set($key, [
                 'driver' => self::LOG_DRIVER_NAME,
-                'path' => $this->app->storagePath().DIRECTORY_SEPARATOR.'logs'.DIRECTORY_SEPARATOR.'patches.log'
+                'path' => $this->app->storagePath().DIRECTORY_SEPARATOR.'logs'.DIRECTORY_SEPARATOR.'patches.log',
             ]);
         }
 
@@ -88,7 +88,7 @@ class PatcherServiceProvider extends ServiceProvider
 
             return new Logger(
                 new Monolog('patcher', [
-                    $handler
+                    $handler,
                 ]),
                 $this->app['events']
             );
