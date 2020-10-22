@@ -80,14 +80,28 @@ that you can use for supporting your patch such as:
 1. `$container: \Illuminate\Container\Container`
 2. `$command: \Illuminate\Console\Command`
 
-we frequently used `$command` property to print process that we're doing.
-example: 
-```php
-$this->command->warn('i patch something danger!');
-$this->command->confirm('do you wish to continue?');
-```
-you can learn more about `\Illuminate\Console\Command` [here](https://laravel.com/api/8.x/Illuminate/Console/Command.html).
+    > we frequently used `$command` property to print process that we're doing.
+    example: 
+    > ```php
+    > $this->command->warn('i patch something danger!');
+    > $this->command->confirm('do you wish to continue?');
+    > ```
+    > you can learn more about `\Illuminate\Console\Command` [here](https://laravel.com/api/8.x/Illuminate/Console/Command.html).
 
+3. `$logger: \Illuminate\Log\Logger`
+
+    > `$logger` will store log in `storage/logs/patches.log`. if you want to change it, add this line below in your `config/logging.php` in channels section.  
+    > ```php
+    > [
+    >     'channels' => [
+    >         'patcher' => [
+    >              'driver' => 'patcher', // you can change me if you want
+    >              'path' => storage_path('logs/patches.log'), // change me
+    >          ],
+    >     ],
+    > ];
+    > ```
+    > you can learn more about `\Illuminate\Log\Logger` [here](https://laravel.com/api/8.x/Illuminate/Log/Logger.html)
 #### SHOW PATCH STATUS
 ```shell script
 php artisan patcher:status
