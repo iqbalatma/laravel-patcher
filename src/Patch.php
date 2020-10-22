@@ -34,7 +34,7 @@ abstract class Patch extends Migration
      */
     public function __construct()
     {
-        $this->logger = app('log')->get('patcher');
+        $this->logger = app('log')->get(PatcherServiceProvider::$LOG_CHANNEL);
     }
 
     /**

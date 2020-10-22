@@ -14,6 +14,10 @@ use Illuminate\Contracts\Foundation\Application;
 
 class PatcherServiceProvider extends ServiceProvider
 {
+    const LOG_DRIVER_NAME = 'patcher';
+
+    static $LOG_CHANNEL = 'patcher';
+
     protected $commands = [
         'PatcherPatch' => 'command.patcher',
         'PatcherInstall' => 'command.patcher.install',
@@ -28,6 +32,8 @@ class PatcherServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerLogger();
+
         $this->registerRepository();
 
         $this->registerPatcher();
@@ -35,8 +41,6 @@ class PatcherServiceProvider extends ServiceProvider
         $this->registerCreator();
 
         $this->registerCommands($this->commands);
-
-        $this->registerLogger();
     }
 
     /**
@@ -58,14 +62,24 @@ class PatcherServiceProvider extends ServiceProvider
      */
     protected function registerLogger()
     {
-        $this->app['log']->extend('patcher', function ($app, $config) {
+        $this->app['config']->set('logging.channels.'.self::$LOG_CHANNEL, [
+            'driver' => self::LOG_DRIVER_NAME,
+            'path' => $this->app->storagePath().DIRECTORY_SEPARATOR.'logs'.DIRECTORY_SEPARATOR.'patches.log'
+        ]);
+
+        $this->app['log']->extend(self::LOG_DRIVER_NAME, function ($app, $config) {
             $handler = new StreamHandler(
                 $config['path'] ?? $this->app->storagePath().'/logs/patches.log',
-                Monolog::INFO
+                Monolog::INFO,
+                $config['bubble'] ?? true,
+                $config['permission'] ?? null,
+                $config['locking'] ?? false
             );
 
             return new Logger(
-                new Monolog('patcher'),
+                new Monolog('patcher', [
+                    $handler
+                ]),
                 $this->app['events']
             );
         });
