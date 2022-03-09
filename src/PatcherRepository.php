@@ -1,17 +1,12 @@
 <?php
 
-namespace Jalameta\Patcher;
+namespace Dentro\Patcher;
 
 use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 
 class PatcherRepository extends DatabaseMigrationRepository
 {
-    /**
-     * Get the completed patches.
-     *
-     * @return array
-     */
-    public function getRan()
+    public function getRan(): array
     {
         return $this->table()
             ->orderBy('batch', 'asc')
@@ -19,13 +14,7 @@ class PatcherRepository extends DatabaseMigrationRepository
             ->pluck('patch')->all();
     }
 
-    /**
-     * Get list of patches.
-     *
-     * @param  int  $steps
-     * @return array
-     */
-    public function getMigrations($steps)
+    public function getMigrations($steps): array
     {
         $query = $this->table()->where('batch', '>=', '1');
 
@@ -34,24 +23,14 @@ class PatcherRepository extends DatabaseMigrationRepository
             ->take($steps)->get()->all();
     }
 
-    /**
-     * Get the last patch batch.
-     *
-     * @return array
-     */
-    public function getLast()
+    public function getLast(): array
     {
         $query = $this->table()->where('batch', $this->getLastBatchNumber());
 
         return $query->orderBy('patch', 'desc')->get()->all();
     }
 
-    /**
-     * Get the completed migrations with their batch numbers.
-     *
-     * @return array
-     */
-    public function getMigrationBatches()
+    public function getMigrationBatches(): array
     {
         return $this->table()
             ->orderBy('batch', 'asc')
@@ -59,44 +38,23 @@ class PatcherRepository extends DatabaseMigrationRepository
             ->pluck('batch', 'patch')->all();
     }
 
-    /**
-     * Log that a migration was run.
-     *
-     * @param  string  $file
-     * @param  int  $batch
-     * @return void
-     */
-    public function log($file, $batch)
+    public function log($file, $batch): void
     {
         $record = ['patch' => $file, 'batch' => $batch];
 
         $this->table()->insert($record);
     }
 
-    /**
-     * Remove a migration from the log.
-     *
-     * @param  object  $migration
-     * @return void
-     */
-    public function delete($migration)
+    public function delete($migration): void
     {
         $this->table()->where('patch', $migration->migration)->delete();
     }
 
-    /**
-     * Create the migration repository data store.
-     *
-     * @return void
-     */
-    public function createRepository()
+    public function createRepository(): void
     {
         $schema = $this->getConnection()->getSchemaBuilder();
 
         $schema->create($this->table, function ($table) {
-            // The migrations table is responsible for keeping track of which of the
-            // migrations have actually run for the application. We'll create the
-            // table to hold the migration file's path as well as the batch ID.
             $table->increments('id');
             $table->string('patch');
             $table->integer('batch');

@@ -1,11 +1,11 @@
 <?php
 
-namespace Jalameta\Patcher\Tests\Command;
+namespace Dentro\Patcher\Tests\Command;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Foundation\Application;
-use Jalameta\Patcher\Console\InstallCommand;
+use Dentro\Patcher\Console\InstallCommand;
 use PHPUnit\Framework\TestCase;
 use Mockery as m;
 use Symfony\Component\Console\Input\ArrayInput;

@@ -1,20 +1,20 @@
 <?php
 
-namespace Jalameta\Patcher;
+namespace Dentro\Patcher;
 
 use Illuminate\Log\Logger;
 use Monolog\Logger as Monolog;
 use Monolog\Handler\StreamHandler;
 use Illuminate\Support\ServiceProvider;
-use Jalameta\Patcher\Console\MakeCommand;
-use Jalameta\Patcher\Console\PatchCommand;
-use Jalameta\Patcher\Console\StatusCommand;
-use Jalameta\Patcher\Console\InstallCommand;
+use Dentro\Patcher\Console\MakeCommand;
+use Dentro\Patcher\Console\PatchCommand;
+use Dentro\Patcher\Console\StatusCommand;
+use Dentro\Patcher\Console\InstallCommand;
 use Illuminate\Contracts\Foundation\Application;
 
 class PatcherServiceProvider extends ServiceProvider
 {
-    const LOG_DRIVER_NAME = 'patcher';
+    public const LOG_DRIVER_NAME = 'patcher';
 
     public static $LOG_CHANNEL = 'patcher';
 
@@ -30,7 +30,7 @@ class PatcherServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->registerLogger();
 
@@ -48,19 +48,14 @@ class PatcherServiceProvider extends ServiceProvider
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return array_merge([
-            'jps.patcher', 'jps.patcher.repository', 'jps.patcher.creator',
+            'dentro.patcher', 'dentro.patcher.repository', 'dentro.patcher.creator',
         ], array_values($this->commands));
     }
 
-    /**
-     * Register logger.
-     *
-     * @return void
-     */
-    protected function registerLogger()
+    protected function registerLogger(): void
     {
         /**
          * @var $config \Illuminate\Config\Repository
@@ -69,7 +64,7 @@ class PatcherServiceProvider extends ServiceProvider
         $key = 'logging.channels.'.self::$LOG_CHANNEL;
 
         // check if specified log channel declared in logging.php
-        // if there is not declaration we will declare it here.
+        // if there is no declaration we will declare it here.
         if (! $config->has($key)) {
             $config->set($key, [
                 'driver' => self::LOG_DRIVER_NAME,
@@ -95,51 +90,30 @@ class PatcherServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Register patcher service.
-     *
-     * @return void
-     */
-    protected function registerPatcher()
+    protected function registerPatcher(): void
     {
-        $this->app->singleton('jps.patcher', function ($app) {
-            $repository = $app['jps.patcher.repository'];
+        $this->app->singleton('dentro.patcher', function ($app) {
+            $repository = $app['dentro.patcher.repository'];
 
             return new Patcher($repository, $app['db'], $app['files'], $app['events']);
         });
     }
 
-    /**
-     * Register patcher repository.
-     *
-     * @return void
-     */
-    protected function registerRepository()
+    protected function registerRepository(): void
     {
-        $this->app->singleton('jps.patcher.repository', function ($app) {
+        $this->app->singleton('dentro.patcher.repository', function ($app) {
             return new PatcherRepository($app['db'], 'patches');
         });
     }
 
-    /**
-     * Register the migration creator.
-     *
-     * @return void
-     */
-    protected function registerCreator()
+    protected function registerCreator(): void
     {
-        $this->app->singleton('jps.patcher.creator', function ($app) {
+        $this->app->singleton('dentro.patcher.creator', function ($app) {
             return new PatcherCreator($app['files'], $app->basePath('stubs'));
         });
     }
 
-    /**
-     * Register the given commands.
-     *
-     * @param  array  $commands
-     * @return void
-     */
-    protected function registerCommands(array $commands)
+    protected function registerCommands(array $commands): void
     {
         foreach (array_keys($commands) as $command) {
             call_user_func_array([$this, "register{$command}Command"], []);
@@ -148,30 +122,20 @@ class PatcherServiceProvider extends ServiceProvider
         $this->commands(array_values($commands));
     }
 
-    /**
-     * Register install command.
-     *
-     * @return void
-     */
-    protected function registerPatcherInstallCommand()
+    protected function registerPatcherInstallCommand(): void
     {
         $this->app->singleton('command.patcher.install', function ($app) {
-            return new InstallCommand($app['jps.patcher.repository']);
+            return new InstallCommand($app['dentro.patcher.repository']);
         });
     }
 
-    /**
-     * Register make command.
-     *
-     * @return void
-     */
-    protected function registerPatcherMakeCommand()
+    protected function registerPatcherMakeCommand(): void
     {
         $this->app->singleton('command.patcher.make', function ($app) {
             // Once we have the migration creator registered, we will create the command
             // and inject the creator. The creator is responsible for the actual file
             // creation of the migrations, and may be extended by these developers.
-            $creator = $app['jps.patcher.creator'];
+            $creator = $app['dentro.patcher.creator'];
 
             $composer = $app['composer'];
 
@@ -179,27 +143,17 @@ class PatcherServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Register status command.
-     *
-     * @return void
-     */
-    protected function registerPatcherStatusCommand()
+    protected function registerPatcherStatusCommand(): void
     {
         $this->app->singleton('command.patcher.status', function ($app) {
-            return new StatusCommand($app['jps.patcher']);
+            return new StatusCommand($app['dentro.patcher']);
         });
     }
 
-    /**
-     * Register patch command.
-     *
-     * @return void
-     */
-    protected function registerPatcherPatchCommand()
+    protected function registerPatcherPatchCommand(): void
     {
         $this->app->singleton('command.patcher', function (Application $app) {
-            return new PatchCommand($app->make('jps.patcher'), $app->make('events'));
+            return new PatchCommand($app->make('dentro.patcher'), $app->make('events'));
         });
     }
 }

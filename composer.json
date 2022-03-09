@@ -1,32 +1,38 @@
 {
-    "name": "jalameta/jps-patcher",
+    "name": "dentro/laravel-patcher",
     "description": "Laravel patch scripts.",
     "require": {
-        "illuminate/support": "^8.0",
-        "illuminate/log": "^8.0",
-        "illuminate/database": "^8.0",
-        "illuminate/console": "^8.0"
+        "illuminate/support": "^9.0",
+        "illuminate/log": "^9.0",
+        "illuminate/database": "^9.0",
+        "illuminate/console": "^9.0"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-latest",
         "mockery/mockery": "^1.4.2",
-        "phpunit/phpunit": "^8.5.8|^9.3.3",
-        "laravel/framework": "^8.0"
+        "phpunit/phpunit": "^9.3.3",
+        "laravel/framework": "^9.0",
+        "orchestra/testbench": "^7.1"
     },
     "license": "MIT",
     "authors": [
         {
             "name": "Rifki Alhuraibi",
             "email": "veelasky@gmail.com"
+        },
+        {
+            "name": "Muhajirin Ilyas",
+            "email": "muhajirin@pm.me"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Jalameta\\Patcher\\": "src"
+            "Dentro\\Patcher\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Jalameta\\Patcher\\Tests\\": "tests"
+            "Dentro\\Patcher\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -36,12 +42,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Jalameta\\Patcher\\PatcherServiceProvider"
+                "Dentro\\Patcher\\PatcherServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-1.x": "1.1-dev",
-            "dev-master": "2.1-dev"
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jalameta\Patcher\Console;
+namespace Dentro\Patcher\Console;
 
 use Illuminate\Database\Console\Migrations\StatusCommand as MigrationStatusCommand;
 
@@ -15,8 +15,7 @@ class StatusCommand extends MigrationStatusCommand
         return $this->migrator->usingConnection($this->option('database'), function () {
             if (! $this->migrator->repositoryExists()) {
                 $this->error('Patcher table not found.');
-
-                return 1;
+                return;
             }
 
             $ran = $this->migrator->getRepository()->getRan();
@@ -36,7 +35,7 @@ class StatusCommand extends MigrationStatusCommand
      *
      * @return string
      */
-    protected function getMigrationPath()
+    protected function getMigrationPath(): string
     {
         return $this->laravel->basePath().DIRECTORY_SEPARATOR.'patches';
     }

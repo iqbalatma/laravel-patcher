@@ -1,11 +1,11 @@
 <?php
 
-namespace Jalameta\Patcher\Tests\Command;
+namespace Dentro\Patcher\Tests\Command;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Composer;
-use Jalameta\Patcher\Console\MakeCommand;
-use Jalameta\Patcher\PatcherCreator;
+use Dentro\Patcher\Console\MakeCommand;
+use Dentro\Patcher\PatcherCreator;
 use PHPUnit\Framework\TestCase;
 use Mockery as m;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -18,7 +18,7 @@ class PatcherMakeCommandTest extends TestCase
         m::close();
     }
 
-    public function testBasicCreateDumpsAutoload()
+    public function testBasicCreateDumpsAutoload(): void
     {
         $command = new MakeCommand(
             $creator = m::mock(PatcherCreator::class),

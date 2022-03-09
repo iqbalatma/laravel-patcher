@@ -1,6 +1,6 @@
 <?php
 
-namespace Jalameta\Patcher;
+namespace Dentro\Patcher;
 
 use Illuminate\Database\Migrations\MigrationCreator;
 
@@ -11,7 +11,7 @@ class PatcherCreator extends MigrationCreator
      *
      * @return string
      */
-    public function stubPath()
+    public function stubPath(): string
     {
         return __DIR__.'/../stubs';
     }
@@ -24,7 +24,7 @@ class PatcherCreator extends MigrationCreator
      * @return string
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    protected function getStub($table, $create)
+    protected function getStub($table, $create): string
     {
         return $this->files->get($this->files->exists($customPath = $this->customStubPath.'/blank.stub')
             ? $customPath

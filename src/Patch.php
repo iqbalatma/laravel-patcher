@@ -1,6 +1,6 @@
 <?php
 
-namespace Jalameta\Patcher;
+namespace Dentro\Patcher;
 
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;
@@ -42,7 +42,7 @@ abstract class Patch extends Migration
      *
      * @return void
      */
-    abstract public function patch();
+    abstract public function patch(): void;
 
     /**
      * Set command.
@@ -50,7 +50,7 @@ abstract class Patch extends Migration
      * @param \Illuminate\Console\Command $command
      * @return $this
      */
-    public function setCommand(Command $command)
+    public function setCommand(Command $command): Patch
     {
         $this->command = $command;
 
@@ -63,7 +63,7 @@ abstract class Patch extends Migration
      * @param  \Illuminate\Container\Container  $container
      * @return $this
      */
-    public function setContainer(Container $container)
+    public function setContainer(Container $container): Patch
     {
         $this->container = $container;
 

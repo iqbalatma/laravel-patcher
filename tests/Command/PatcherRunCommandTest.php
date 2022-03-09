@@ -1,12 +1,12 @@
 <?php
 
-namespace Jalameta\Patcher\Tests\Command;
+namespace Dentro\Patcher\Tests\Command;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Events\SchemaLoaded;
 use Illuminate\Foundation\Application;
-use Jalameta\Patcher\Console\PatchCommand;
-use Jalameta\Patcher\Patcher;
+use Dentro\Patcher\Console\PatchCommand;
+use Dentro\Patcher\Patcher;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\Console\Input\ArrayInput;
