@@ -2,8 +2,8 @@ LARAVEL PATCHER
 --
 *A (migration like) patcher for a smoldering production update.* <br>
 
-[![Total Downloads](https://img.shields.io/packagist/dt/dentro/laravel-patcher.svg?style=flat-square)](https://packagist.org/packages/dentro/laravel-patcher)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dentro/laravel-patcher/tests?label=tests)
+[![Total Downloads](https://poser.pugx.org/dentro/laravel-patcher/downloads)](https://packagist.org/packages/dentro/yalr)
+![GitHub Workflow Status](https://github.com/digital-entropy/laravel-patcher/workflows/tests/badge.svg)
 
 #### Requirements:
 * PHP : 8.\*
