@@ -18,7 +18,7 @@ class PatcherInstallCommandTest extends TestCase
         m::close();
     }
 
-    public function testFireCallsRepositoryToInstall()
+    public function testFireCallsRepositoryToInstall(): void
     {
         $command = new InstallCommand($repo = m::mock(MigrationRepositoryInterface::class));
 
@@ -29,7 +29,7 @@ class PatcherInstallCommandTest extends TestCase
         $this->runCommand($command, ['--database' => 'foo']);
     }
 
-    protected function runCommand(Command $command, $options = [])
+    protected function runCommand(Command $command, $options = []): int
     {
         return $command->run(new ArrayInput($options), new NullOutput());
     }

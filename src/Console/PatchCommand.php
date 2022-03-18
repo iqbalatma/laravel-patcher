@@ -39,9 +39,7 @@ class PatchCommand extends MigrateCommand
     protected function prepareDatabase(): void
     {
         if (! $this->migrator->repositoryExists()) {
-            $this->call('patcher:install', array_filter([
-                '--database' => $this->option('database'),
-            ]));
+            $this->call('patcher:install');
         }
     }
 

@@ -32,7 +32,7 @@ class PatcherMakeCommandTest extends TestCase
         $this->runCommand($command, ['name' => 'fix_foo']);
     }
 
-    public function testBasicCreateGivesCreatorProperArguments()
+    public function testBasicCreateGivesCreatorProperArguments(): void
     {
         $command = new MakeCommand(
             $creator = m::mock(PatcherCreator::class),
@@ -45,7 +45,7 @@ class PatcherMakeCommandTest extends TestCase
         $this->runCommand($command, ['name' => 'fix_foo']);
     }
 
-    public function testBasicCreateGivesCreatorProperArgumentsWhenNameIsStudlyCase()
+    public function testBasicCreateGivesCreatorProperArgumentsWhenNameIsStudlyCase(): void
     {
         $command = new MakeCommand(
             $creator = m::mock(PatcherCreator::class),

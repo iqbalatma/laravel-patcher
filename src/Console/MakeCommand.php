@@ -28,10 +28,10 @@ class MakeCommand extends MigrateMakeCommand
      * @param $name
      * @param $table
      * @param $create
-     * @return string
+     * @return string|null
      * @throws \Exception
      */
-    protected function writeMigration($name, $table, $create): string
+    protected function writeMigration($name, $table, $create): ?string
     {
         $file = $this->creator->create(
             $name, $this->getMigrationPath(), $table, $create

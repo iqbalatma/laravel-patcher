@@ -84,7 +84,7 @@ class Patcher extends Migrator
      * @return void
      * @throws \Throwable
      */
-    protected function runPatch($migration, string $method): void
+    protected function runPatch(object $migration, string $method): void
     {
         $connection = $this->resolveConnection(
             $migration->getConnection()
