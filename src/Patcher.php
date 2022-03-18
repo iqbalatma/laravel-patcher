@@ -2,6 +2,8 @@
 
 namespace Dentro\Patcher;
 
+use Dentro\Patcher\Events\PatchEnded;
+use Dentro\Patcher\Events\PatchStarted;
 use Illuminate\Database\Migrations\Migrator;
 
 class Patcher extends Migrator
@@ -50,23 +52,17 @@ class Patcher extends Migrator
      */
     protected function patch(string $file, int $batch, bool $pretend): void
     {
-        $migration = $this->resolve(
-            $name = $this->getMigrationName($file)
-        );
+        $migration = $this->resolvePath($file);
+
+        $name = $this->getMigrationName($file);
 
         $migration->setContainer(app())->setCommand(app('command.patcher'));
-
-        if ($pretend) {
-            $this->pretendToRun($migration, 'patch');
-
-            return;
-        }
 
         $this->note("<comment>Patching:</comment> {$name}");
 
         $startTime = microtime(true);
 
-        $this->runPatch($migration, 'patch');
+        $this->runPatch($migration);
 
         $runTime = round(microtime(true) - $startTime, 2);
 
@@ -78,26 +74,36 @@ class Patcher extends Migrator
     /**
      * Run a migration inside a transaction if the database supports it.
      *
-     * @param object $migration
-     * @param string $method
-     *
+     * @param object $patch
      * @return void
      * @throws \Throwable
      */
-    protected function runPatch(object $migration, string $method): void
+    protected function runPatch(object $patch): void
     {
         $connection = $this->resolveConnection(
-            $migration->getConnection()
+            $patch->getConnection()
         );
 
-        $callback = static function () use ($migration, $method) {
-            if (method_exists($migration, $method)) {
-                $migration->{$method}();
+        $dispatchEvent = function (object $event) {
+            $this->events->dispatch($event);
+        };
+
+        $callback = static function () use ($patch, $dispatchEvent) {
+            if (method_exists($patch, 'patch')) {
+                if ($patch instanceof Patch) {
+                    $dispatchEvent(new PatchStarted($patch));
+                }
+
+                $patch->patch();
+
+                if ($patch instanceof Patch) {
+                    $dispatchEvent(new PatchEnded($patch));
+                }
             }
         };
 
         $this->getSchemaGrammar($connection)->supportsSchemaTransactions()
-        && $migration->withinTransaction
+        && $patch->withinTransaction
             ? $connection->transaction($callback)
             : $callback();
     }

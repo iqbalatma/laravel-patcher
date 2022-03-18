@@ -9,8 +9,8 @@ return new class extends Patch
      *
      * @return void
      */
-    public function patch()
+    public function patch(): void
     {
         //
     }
-}
+};
