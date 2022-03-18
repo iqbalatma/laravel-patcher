@@ -37,19 +37,11 @@ composer require dentro/laravel-patcher
 ### POST INSTALLATION 
 > this process is optional, you can skip it though. 
 
-1. applying into your project.
-    * Laravel >= 5.8
-        * Automatically loaded :)
+patches table creation.
+```shell script
+ php artisan patcher:install
+```
     
-    * Laravel <= 5.8 
-        * Add the `\Jalameta\Patcher\PatcherServiceProvider` into `providers` 
-        array in `config/app.php`
-
-2. patches table creation.
-    ```shell script
-     php artisan patcher:install
-    ```
-   
 ### USAGE 
 #### CREATE NEW PATCH 
 for creating new patch you just need to run these following command 
