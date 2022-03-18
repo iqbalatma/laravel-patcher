@@ -2,30 +2,35 @@ LARAVEL PATCHER
 --
 *A (migration like) patcher for a smoldering production update.* <br>
 
-[![Total Downloads](https://img.shields.io/packagist/dt/jalameta/jps-patcher.svg?style=flat-square)](https://packagist.org/packages/jalameta/jps-patcher)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jalameta/laravel-patcher/tests?label=tests)
+[![Total Downloads](https://img.shields.io/packagist/dt/dentro/laravel-patcher.svg?style=flat-square)](https://packagist.org/packages/dentro/laravel-patcher)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dentro/laravel-patcher/tests?label=tests)
 
-Already tested on: 
-* Laravel: 6.* | 7.\* | 8.\* 
+#### Requirements:
+* PHP : 8.\*
+* Laravel: 9.\* 
 
 ##### Background : 
-Our team has been made a stupid thing that affect database in our project. 
+Once upon a time, our team do a stupid thing that affect our production database. 
 It was happens many times, and we are usually go tinkering or direct edit on a 
-database to fix those problems. The problem is we need to record those change, 
-so we made this package. Besides, we sometime need to doing 
-bulk insert user for our application, so ***patch*** will be the best solution.
+database to fix those problems.
+Then, our team leader [Rifki Alhuraibi](https://github.com/veelasky/) comes up with
+the idea about the package that handle history change of our patch activity (like the 
+one in database migration), so we made this package. 
+Also, we commonly need to bulk insert data to our application, this package also help
+us in those activity.
 
 ### INSTALLATION
 do either of this methods below.
 * via shell 
 ```shell script
-composer require jalameta/jps-patcher
+composer require dentro/laravel-patcher
 ``` 
-* adding `"jalameta/jps-patcher": "^2.0"` to `composer.json`
+* adding `"dentro/laravel-patcher": "^1.0"` to `composer.json`
 ```json
 {
   "require": {
-    "jalameta/jps-patcher": "^2.0"
+    ...
+    "dentro/laravel-patcher": "^1.0"
   }
 }
 ```
@@ -51,9 +56,6 @@ for creating new patch you just need to run these following command
 ```shell script
 php artisan make:patch what_do_you_want_to_patch
 ```
-> wait, do you feels familiar huh?, we do too.
-The truth is, this package is extending laravel migration.<br>
->
 after run those command, you will see new file in `patches` folder. 
 Those file will be like:
 ```php
@@ -76,7 +78,7 @@ class WhatDoYouWantToPatch extends Patch
 }
 ```
 Method `patch` on these file will be filled with your logic. 
-in ```Jalameta\Patcher\Patch``` there is some useful properties 
+in ```Dentro\Patcher\Patch``` there is some useful properties 
 that you can use for supporting your patch such as: 
 1. `$container: \Illuminate\Container\Container`
 2. `$command: \Illuminate\Console\Command`
@@ -87,7 +89,7 @@ that you can use for supporting your patch such as:
     > $this->command->warn('i patch something danger!');
     > $this->command->confirm('do you wish to continue?');
     > ```
-    > you can learn more about `\Illuminate\Console\Command` [here](https://laravel.com/api/8.x/Illuminate/Console/Command.html).
+    > you can learn more about `\Illuminate\Console\Command` [here](https://laravel.com/api/9.x/Illuminate/Console/Command.html).
 
 3. `$logger: \Illuminate\Log\Logger`
 
@@ -109,7 +111,6 @@ php artisan patcher:status
 ```
 Example: 
 ```shell script
-my_project on  master [$!] via ⬢ v14.14.0 via 🐘 v7.4.11 on 🐳 v19.03.13 
 ➜ php artisan patcher:status
 +------+---------------------------------------+-------+
 | Ran? | Patch                                 | Batch |
@@ -125,7 +126,6 @@ php artisan patcher:run
 ```
 Example:
 ```shell script
-my_project on  master [$!] via ⬢ v14.14.0 via 🐘 v7.4.11 on 🐳 v19.03.13 
 ➜ php artisan patcher:status
 Patches table created successfully.
 Patching: 2020_09_29_190531_fix_double_sections
