@@ -118,7 +118,7 @@ php artisan patcher:run
 ```
 Example:
 ```shell script
-➜ php artisan patcher:status
+➜ php artisan patcher:run
 Patches table created successfully.
 Patching: 2020_09_29_190531_fix_double_sections
 Patched:  2020_09_29_190531_fix_double_sections (0.03 seconds)
