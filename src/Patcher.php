@@ -4,6 +4,7 @@ namespace Dentro\Patcher;
 
 use Dentro\Patcher\Events\PatchEnded;
 use Dentro\Patcher\Events\PatchStarted;
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Migrations\Migrator;
 
 class Patcher extends Migrator
@@ -62,13 +63,31 @@ class Patcher extends Migrator
 
         $startTime = microtime(true);
 
-        $this->runPatch($migration);
+        if (method_exists($migration, 'eligible') && $migration->eligible())
+        {
+            $this->runPatch($migration);
+        }
 
         $runTime = round(microtime(true) - $startTime, 2);
 
         $this->repository->log($name, $batch);
 
         $this->note("<info>Patched:</info>  {$name} ({$runTime} seconds)");
+    }
+
+    /**
+     * Determine if patcher should run.
+     *
+     * @param \Illuminate\Database\Migrations\Migration $migration
+     * @return bool
+     */
+    public function isEligible(Migration $migration): bool
+    {
+        if (method_exists($migration, 'eligible')) {
+            return $migration->eligible();
+        }
+
+        return true;
     }
 
     /**
