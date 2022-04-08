@@ -7,17 +7,7 @@ LARAVEL PATCHER
 
 #### Requirements:
 * PHP : 8.\*
-* Laravel: 9.\* 
-
-##### Background : 
-Once upon a time, our team do a stupid thing that affect our production database. 
-It was happens many times, and we are usually go tinkering or direct edit on a 
-database to fix those problems.
-Then, our team leader [Rifki Alhuraibi](https://github.com/veelasky/) comes up with
-the idea about the package that handle history change of our patch activity (like the 
-one in database migration), so we made this package. 
-Also, we commonly need to bulk insert data to our application, this package also help
-us in those activity.
+* Laravel: 9.\*
 
 ### INSTALLATION
 do either of this methods below.
