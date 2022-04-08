@@ -30,6 +30,13 @@ abstract class Patch extends Migration
     protected $logger;
 
     /**
+     * Enables, if supported, wrapping the migration within a transaction.
+     *
+     * @var bool
+     */
+    public $withinTransaction = false;
+
+    /**
      * Patch constructor.
      */
     public function __construct()
