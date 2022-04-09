@@ -4,7 +4,6 @@ namespace Dentro\Patcher;
 
 use Dentro\Patcher\Events\PatchEnded;
 use Dentro\Patcher\Events\PatchStarted;
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Migrations\Migrator;
 
 class Patcher extends Migrator
@@ -28,12 +27,10 @@ class Patcher extends Migrator
 
         $batch = $this->repository->getNextBatchNumber();
 
-        $pretend = $options['pretend'] ?? false;
-
         $step = $options['step'] ?? false;
 
         foreach ($migrations as $file) {
-            $this->patch($file, $batch, $pretend);
+            $this->patch($file, $batch);
 
             if ($step) {
                 $batch++;
@@ -46,45 +43,47 @@ class Patcher extends Migrator
      *
      * @param string $file
      * @param int $batch
-     * @param bool $pretend
-     *
      * @return void
      * @throws \Throwable
      */
-    protected function patch(string $file, int $batch, bool $pretend): void
+    protected function patch(string $file, int $batch): void
     {
-        $migration = $this->resolvePath($file);
+        $patch = $this->resolvePath($file);
 
         $name = $this->getMigrationName($file);
 
-        $migration->setContainer(app())->setCommand(app('command.patcher'));
-
-        $this->note("<comment>Patching:</comment> {$name}");
+        $this->note("<comment>Patching:</comment> $name");
 
         $startTime = microtime(true);
 
-        if ($this->isEligible()) {
-            $this->runPatch($migration);
+        if ($patch instanceof Patch && $this->isEligible($patch)) {
+            $patch
+                ->setContainer(app())
+                ->setCommand(app('command.patcher'))
+                ->setLogger(app('log')->driver(PatcherServiceProvider::$LOG_CHANNEL));
+
+            $this->runPatch($patch);
 
             $runTime = round(microtime(true) - $startTime, 2);
 
             $this->repository->log($name, $batch);
 
-            $this->note("<info>Patched:</info>  {$name} ({$runTime} seconds).");
+            $this->note("<info>Patched:</info>  $name ($runTime seconds).");
         } else {
-            $this->note("<comment>Skipped:</comment> {$name} is not eligible to run in current condition.");
+            $this->note("<comment>Skipped:</comment> $name is not eligible to run in current condition.");
         }
     }
 
     /**
      * Determine if patcher should run.
      *
+     * @param \Dentro\Patcher\Patch $patch
      * @return bool
      */
-    public function isEligible(): bool
+    public function isEligible(Patch $patch): bool
     {
-        if (method_exists($this, 'eligible')) {
-            return $this->eligible();
+        if (method_exists($patch, 'eligible')) {
+            return $patch->eligible();
         }
 
         return true;
@@ -93,11 +92,11 @@ class Patcher extends Migrator
     /**
      * Run a migration inside a transaction if the database supports it.
      *
-     * @param object $patch
+     * @param \Dentro\Patcher\Patch $patch
      * @return void
      * @throws \Throwable
      */
-    protected function runPatch(object $patch): void
+    protected function runPatch(Patch $patch): void
     {
         $connection = $this->resolveConnection(
             $patch->getConnection()
@@ -121,9 +120,11 @@ class Patcher extends Migrator
             }
         };
 
-        $this->getSchemaGrammar($connection)->supportsSchemaTransactions()
-        && $patch->withinTransaction
-            ? $connection->transaction($callback)
-            : $callback();
+        if ($patch->withinTransaction && $this->getSchemaGrammar($connection)->supportsSchemaTransactions()) {
+            $connection->transaction($callback);
+            return;
+        }
+
+        $callback();
     }
 }

@@ -38,14 +38,6 @@ abstract class Patch extends Migration
     public $withinTransaction = false;
 
     /**
-     * Patch constructor.
-     */
-    public function __construct()
-    {
-        $this->logger = app('log')->driver(PatcherServiceProvider::$LOG_CHANNEL);
-    }
-
-    /**
      * Run patch script.
      *
      * @return void
@@ -76,5 +68,15 @@ abstract class Patch extends Migration
         $this->container = $container;
 
         return $this;
+    }
+
+    /**
+     * Set Logger instance.
+     *
+     * @param \Illuminate\Log\Logger $logger
+     */
+    public function setLogger(Logger $logger): void
+    {
+        $this->logger = $logger;
     }
 }
