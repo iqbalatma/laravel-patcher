@@ -5,6 +5,7 @@ namespace Dentro\Patcher;
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Log\Logger;
 
 abstract class Patch extends Migration
 {
@@ -13,29 +14,28 @@ abstract class Patch extends Migration
      *
      * @var \Illuminate\Console\Command
      */
-    protected $command;
+    protected Command $command;
 
     /**
      * The container instance.
      *
      * @var \Illuminate\Container\Container
      */
-    protected $container;
+    protected Container $container;
 
     /**
      * Logger.
      *
      * @var \Illuminate\Log\Logger
      */
-    protected $logger;
+    protected Logger $logger;
 
     /**
-     * Patch constructor.
+     * Enables, if supported, wrapping the patch within a transaction.
+     *
+     * @var bool
      */
-    public function __construct()
-    {
-        $this->logger = app('log')->driver(PatcherServiceProvider::$LOG_CHANNEL);
-    }
+    public $withinTransaction = false;
 
     /**
      * Run patch script.
@@ -68,5 +68,15 @@ abstract class Patch extends Migration
         $this->container = $container;
 
         return $this;
+    }
+
+    /**
+     * Set Logger instance.
+     *
+     * @param \Illuminate\Log\Logger $logger
+     */
+    public function setLogger(Logger $logger): void
+    {
+        $this->logger = $logger;
     }
 }
