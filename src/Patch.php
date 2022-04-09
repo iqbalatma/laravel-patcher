@@ -5,6 +5,7 @@ namespace Dentro\Patcher;
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Log\Logger;
 
 abstract class Patch extends Migration
 {
@@ -13,24 +14,24 @@ abstract class Patch extends Migration
      *
      * @var \Illuminate\Console\Command
      */
-    protected $command;
+    protected Command $command;
 
     /**
      * The container instance.
      *
      * @var \Illuminate\Container\Container
      */
-    protected $container;
+    protected Container $container;
 
     /**
      * Logger.
      *
      * @var \Illuminate\Log\Logger
      */
-    protected $logger;
+    protected Logger $logger;
 
     /**
-     * Enables, if supported, wrapping the migration within a transaction.
+     * Enables, if supported, wrapping the patch within a transaction.
      *
      * @var bool
      */
