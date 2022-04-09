@@ -63,28 +63,28 @@ class Patcher extends Migrator
 
         $startTime = microtime(true);
 
-        if (method_exists($migration, 'eligible') && $migration->eligible())
-        {
+        if ($this->isEligible()) {
             $this->runPatch($migration);
+
+            $runTime = round(microtime(true) - $startTime, 2);
+
+            $this->repository->log($name, $batch);
+
+            $this->note("<info>Patched:</info>  {$name} ({$runTime} seconds).");
+        } else {
+            $this->note("<comment>Skipped:</comment> {$name} is not eligible to run in current condition.");
         }
-
-        $runTime = round(microtime(true) - $startTime, 2);
-
-        $this->repository->log($name, $batch);
-
-        $this->note("<info>Patched:</info>  {$name} ({$runTime} seconds)");
     }
 
     /**
      * Determine if patcher should run.
      *
-     * @param \Illuminate\Database\Migrations\Migration $migration
      * @return bool
      */
-    public function isEligible(Migration $migration): bool
+    public function isEligible(): bool
     {
-        if (method_exists($migration, 'eligible')) {
-            return $migration->eligible();
+        if (method_exists($this, 'eligible')) {
+            return $this->eligible();
         }
 
         return true;

@@ -19,7 +19,6 @@ composer require dentro/laravel-patcher
 ```json
 {
   "require": {
-    ...
     "dentro/laravel-patcher": "^1.0"
   }
 }
@@ -43,16 +42,10 @@ Those file will be like:
 ```php
 <?php
 
-use Jalameta\Patcher\Patch;
+use Dentro\Patcher\Patch;
 
 class WhatDoYouWantToPatch extends Patch
 {
-    /**
-     * Run patch script.
-     *
-     * @return void
-     * @throws \Exception
-     */
     public function patch()
     {
         // 
@@ -116,3 +109,37 @@ Patching: 2020_10_09_124616_add_attachment_beep
 Patched:  2020_10_09_124616_add_attachment_beep (0.06 seconds)
 ```
 
+#### SKIPPING THE PATCH
+You might need to skip single patch when run ```php artisan patcher:run```. 
+Due to patch is unnecessary or patch is not eligible to run in your environment. 
+Here you can add the ```eligible``` method to your patch class to evaluate the condition 
+before running the ```patch``` method.   
+
+```php
+<?php
+
+use Dentro\Patcher\Patch;
+use App\Models\User;
+
+class WhatDoYouWantToPatch extends Patch
+{
+    public function eligible(): bool
+    {
+        return User::query()->where('id', 331)->exists();
+    }
+    
+    public function patch()
+    {
+        $user = User::query()->find(331);
+        // do something with user.
+    }
+}
+```
+then the output of ```php artisan patcher:run``` will be:
+```shell script
+➜ php artisan patcher:run
+Patching: 2020_09_29_190531_fix_double_sections
+Skipped:  2020_09_29_190531_fix_double_sections is not eligible to run in current condition.
+Patching: 2020_10_09_124616_add_attachment_beep
+Patched:  2020_10_09_124616_add_attachment_beep (0.06 seconds)
+```
