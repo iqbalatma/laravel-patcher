@@ -38,6 +38,13 @@ abstract class Patch extends Migration
     public $withinTransaction = false;
 
     /**
+     * Determine if patch should run perpetually.
+     *
+     * @var bool
+     */
+    public bool $isPerpetual = false;
+
+    /**
      * Run patch script.
      *
      * @return void

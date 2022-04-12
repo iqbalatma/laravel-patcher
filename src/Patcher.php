@@ -66,7 +66,9 @@ class Patcher extends Migrator
 
             $runTime = round(microtime(true) - $startTime, 2);
 
-            $this->repository->log($name, $batch);
+            if (! $patch->isPerpetual) {
+                $this->repository->log($name, $batch);
+            }
 
             $this->note("<info>Patched:</info>  $name ($runTime seconds).");
         } else {
