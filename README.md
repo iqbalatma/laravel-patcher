@@ -1,4 +1,4 @@
-LARAVEL PATCHER 
+Laravel Patcher
 --
 *A (migration like) patcher for a smoldering production update.* <br>
 
@@ -9,7 +9,7 @@ LARAVEL PATCHER
 * PHP : 8.\*
 * Laravel: 9.\*
 
-### INSTALLATION
+### Installation
 do either of this methods below.
 * via shell 
 ```shell script
@@ -23,7 +23,7 @@ composer require dentro/laravel-patcher
   }
 }
 ```
-### POST INSTALLATION 
+### Post Installation 
 > this process is optional, you can skip it though. 
 
 patches table creation.
@@ -31,8 +31,8 @@ patches table creation.
  php artisan patcher:install
 ```
     
-### USAGE 
-#### CREATE NEW PATCH 
+### Usage 
+#### Create New Patch
 for creating new patch you just need to run these following command 
 ```shell script
 php artisan make:patch what_do_you_want_to_patch
@@ -80,7 +80,7 @@ that you can use for supporting your patch such as:
     > ];
     > ```
     > you can learn more about `\Illuminate\Log\Logger` [here](https://laravel.com/api/8.x/Illuminate/Log/Logger.html)
-#### SHOW PATCH STATUS
+#### Show Patch Status
 ```shell script
 php artisan patcher:status
 ```
@@ -95,7 +95,7 @@ Example:
 +------+---------------------------------------+-------+
 ```
 
-#### RUN A PATCH(ES)
+#### Run Pending Patch(es)
 ```shell script
 php artisan patcher:run
 ```
@@ -109,7 +109,7 @@ Patching: 2020_10_09_124616_add_attachment_beep
 Patched:  2020_10_09_124616_add_attachment_beep (0.06 seconds)
 ```
 
-#### SKIPPING THE PATCH
+#### Conditional Patch
 You might need to skip single patch when run ```php artisan patcher:run```. 
 Due to patch is unnecessary or patch is not eligible to run in your environment. 
 Here you can add the ```eligible``` method to your patch class to evaluate the condition 
@@ -142,4 +142,15 @@ Patching: 2020_09_29_190531_fix_double_sections
 Skipped:  2020_09_29_190531_fix_double_sections is not eligible to run in current condition.
 Patching: 2020_10_09_124616_add_attachment_beep
 Patched:  2020_10_09_124616_add_attachment_beep (0.06 seconds)
+```
+
+#### Perpetual Patch
+In some cases you might also want to run patches script indefinitely, you can change `isPerpetual`
+property on your patch file to `true`
+
+```php
+class WhatDoYouWantToPatch extends Patch
+{
+    public bool $isPerpetual = true;
+}
 ```
