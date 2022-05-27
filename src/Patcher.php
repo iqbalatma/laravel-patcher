@@ -69,8 +69,10 @@ class Patcher extends Migrator
             if (! $patch->isPerpetual) {
                 $this->repository->log($name, $batch);
             }
+            
+            $perpetualMessage = $patch->isPerpetual ? " (Perpetual)" : "";
 
-            $this->note("<info>Patched:</info> $name ($runTime seconds)." . $patch->isPerpetual ? " (Perpetual)" : "");
+            $this->note("<info>Patched:</info> $name ($runTime seconds).<comment>$perpetualMessage</comment>");
         } else {
             $this->note("<comment>Skipped:</comment> $name is not eligible to run in current condition.");
         }
