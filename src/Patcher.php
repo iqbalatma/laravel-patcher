@@ -58,7 +58,7 @@ class Patcher extends Migrator
 
         $perpetualMessage = $patch->isPerpetual ? " <fg=yellow;options=bold>(Perpetual)</>" : "";
 
-        $info = '<fg=yellow;options=bold>Patching: </>'.$name.$perpetualMessage;
+        $info = '<fg=yellow>Patching: </>'.$name.$perpetualMessage;
 
         $this->write(
             TwoColumnDetail::class,
