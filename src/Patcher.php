@@ -4,6 +4,9 @@ namespace Dentro\Patcher;
 
 use Dentro\Patcher\Events\PatchEnded;
 use Dentro\Patcher\Events\PatchStarted;
+use Illuminate\Console\View\Components\Info;
+use Illuminate\Console\View\Components\Task;
+use Illuminate\Console\View\Components\Warn;
 use Illuminate\Database\Migrations\Migrator;
 
 class Patcher extends Migrator
@@ -20,7 +23,7 @@ class Patcher extends Migrator
     public function runPending(array $migrations, array $options = []): void
     {
         if (count($migrations) === 0) {
-            $this->note('<info>Nothing to patch.</info>');
+            $this->write(Info::class, 'Nothing to patch.');
 
             return;
         }
@@ -52,29 +55,28 @@ class Patcher extends Migrator
 
         $name = $this->getMigrationName($file);
 
-        $this->note("<comment>Patching:</comment> $name");
-
-        $startTime = microtime(true);
+        $this->write(Info::class, "Patching: $name");
 
         if ($patch instanceof Patch && $this->isEligible($patch)) {
+            $perpetualMessage = $patch->isPerpetual ? " (Perpetual)" : "";
+
             $patch
                 ->setContainer(app())
                 ->setCommand(app('command.patcher'))
                 ->setLogger(app('log')->driver(PatcherServiceProvider::$LOG_CHANNEL));
 
-            $this->runPatch($patch);
+            $action = function () use ($patch, $batch, $name) {
+                $this->runPatch($patch);
 
-            $runTime = round(microtime(true) - $startTime, 2);
+                if (! $patch->isPerpetual) {
+                    $this->repository->log($name, $batch);
+                }
+            };
 
-            if (! $patch->isPerpetual) {
-                $this->repository->log($name, $batch);
-            }
-            
-            $perpetualMessage = $patch->isPerpetual ? " (Perpetual)" : "";
-
-            $this->note("<info>Patched:</info> $name ($runTime seconds).<comment>$perpetualMessage</comment>");
+            /** @noinspection PhpParamsInspection */
+            $this->write(Task::class, $name.$perpetualMessage, $action);
         } else {
-            $this->note("<comment>Skipped:</comment> $name is not eligible to run in current condition.");
+            $this->write(Warn::class, "Skipped: $name is not eligible to run in current condition.");
         }
     }
 
