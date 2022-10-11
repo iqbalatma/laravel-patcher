@@ -6,6 +6,7 @@ use Dentro\Patcher\Events\PatchEnded;
 use Dentro\Patcher\Events\PatchStarted;
 use Illuminate\Console\View\Components\Info;
 use Illuminate\Console\View\Components\Task;
+use Illuminate\Console\View\Components\TwoColumnDetail;
 use Illuminate\Console\View\Components\Warn;
 use Illuminate\Database\Migrations\Migrator;
 
@@ -55,11 +56,17 @@ class Patcher extends Migrator
 
         $name = $this->getMigrationName($file);
 
-        $this->write(Info::class, "Patching: $name");
+        $perpetualMessage = $patch->isPerpetual ? " (Perpetual)" : "";
+
+        $info = 'Patching: '.$name.$perpetualMessage;
+
+        $this->write(
+            TwoColumnDetail::class,
+            $info,
+            '<fg=yellow;options=bold>RUNNING</>'
+        );
 
         if ($patch instanceof Patch && $this->isEligible($patch)) {
-            $perpetualMessage = $patch->isPerpetual ? " (Perpetual)" : "";
-
             $patch
                 ->setContainer(app())
                 ->setCommand(app('command.patcher'))
@@ -68,15 +75,19 @@ class Patcher extends Migrator
             $action = function () use ($patch, $batch, $name) {
                 $this->runPatch($patch);
 
-                if (! $patch->isPerpetual) {
+                if (!$patch->isPerpetual) {
                     $this->repository->log($name, $batch);
                 }
             };
 
             /** @noinspection PhpParamsInspection */
-            $this->write(Task::class, $name.$perpetualMessage, $action);
+            $this->write(Task::class, $info, $action);
         } else {
-            $this->write(Warn::class, "Skipped: $name is not eligible to run in current condition.");
+            $this->write(
+                TwoColumnDetail::class,
+                "Patching: $info is not eligible to run in current condition",
+                '<fg=yellow;options=bold>SKIPPED</>'
+            );
         }
     }
 
