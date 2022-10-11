@@ -66,22 +66,27 @@ class Patcher extends Migrator
             '<fg=yellow;options=bold>RUNNING</>'
         );
 
+        $startTime = microtime(true);
+
         if ($patch instanceof Patch && $this->isEligible($patch)) {
             $patch
                 ->setContainer(app())
                 ->setCommand(app('command.patcher'))
                 ->setLogger(app('log')->driver(PatcherServiceProvider::$LOG_CHANNEL));
 
-            $action = function () use ($patch, $batch, $name) {
-                $this->runPatch($patch);
+            $this->runPatch($patch);
 
-                if (!$patch->isPerpetual) {
-                    $this->repository->log($name, $batch);
-                }
-            };
+            $runTime = round(microtime(true) - $startTime, 2);
 
-            /** @noinspection PhpParamsInspection */
-            $this->write(Task::class, $info, $action);
+            if (!$patch->isPerpetual) {
+                $this->repository->log($name, $batch);
+            }
+
+            $this->write(
+                TwoColumnDetail::class,
+                $info,
+                "<fg=gray>$runTime ms</> <fg=green;options=bold>DONE</>"
+            );
         } else {
             $this->write(
                 TwoColumnDetail::class,
