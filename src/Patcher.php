@@ -56,7 +56,7 @@ class Patcher extends Migrator
 
         $name = $this->getMigrationName($file);
 
-        $perpetualMessage = $patch->isPerpetual ? " (Perpetual)" : "";
+        $perpetualMessage = $patch->isPerpetual ? " <fg=yellow;options=bold>(Perpetual)</>" : "";
 
         $info = 'Patching: '.$name.$perpetualMessage;
 
