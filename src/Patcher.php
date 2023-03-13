@@ -78,10 +78,6 @@ class Patcher extends Migrator
 
             $runTime = round(microtime(true) - $startTime, 2);
 
-            if (!$patch->isPerpetual) {
-                $this->repository->log($name, $batch);
-            }
-
             $this->write(
                 TwoColumnDetail::class,
                 $info,
@@ -90,9 +86,13 @@ class Patcher extends Migrator
         } else {
             $this->write(
                 TwoColumnDetail::class,
-                "Patching: $info is not eligible to run in current condition",
+                "$info is not eligible to run in current condition",
                 '<fg=yellow;options=bold>SKIPPED</>'
             );
+        }
+
+        if (!$patch->isPerpetual) {
+            $this->repository->log($name, $batch);
         }
     }
 
