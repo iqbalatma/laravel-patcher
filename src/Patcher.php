@@ -5,10 +5,9 @@ namespace Dentro\Patcher;
 use Dentro\Patcher\Events\PatchEnded;
 use Dentro\Patcher\Events\PatchStarted;
 use Illuminate\Console\View\Components\Info;
-use Illuminate\Console\View\Components\Task;
 use Illuminate\Console\View\Components\TwoColumnDetail;
-use Illuminate\Console\View\Components\Warn;
 use Illuminate\Database\Migrations\Migrator;
+use InvalidArgumentException;
 
 class Patcher extends Migrator
 {
@@ -52,7 +51,7 @@ class Patcher extends Migrator
      */
     protected function patch(string $file, int $batch): void
     {
-        $patch = $this->resolvePath($file);
+        $patch = $this->getPatcherObject($file);
 
         $name = $this->getMigrationName($file);
 
@@ -68,7 +67,7 @@ class Patcher extends Migrator
 
         $startTime = microtime(true);
 
-        if ($patch instanceof Patch && $this->isEligible($patch)) {
+        if ($this->isEligible($patch)) {
             $patch
                 ->setContainer(app())
                 ->setCommand(app('command.patcher'))
@@ -148,5 +147,16 @@ class Patcher extends Migrator
         }
 
         $callback();
+    }
+
+    public function getPatcherObject(string $path): Patch
+    {
+        $object = $this->resolvePath($path);
+
+        if (! $object instanceof Patch) {
+            throw new InvalidArgumentException("Patch [{$path}] must extends ".Patch::class);
+        }
+
+        return $object;
     }
 }

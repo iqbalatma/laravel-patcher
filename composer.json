@@ -10,9 +10,8 @@
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "mockery/mockery": "^1.4.2",
-        "phpunit/phpunit": "^9.3.3",
-        "laravel/framework": "^9.0",
-        "orchestra/testbench": "^7.1"
+        "phpunit/phpunit": "^10.0",
+        "orchestra/testbench": "^8.0.10"
     },
     "license": "MIT",
     "authors": [
