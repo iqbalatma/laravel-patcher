@@ -6,11 +6,11 @@ Laravel Patcher
 ![GitHub Workflow Status](https://github.com/digital-entropy/laravel-patcher/workflows/tests/badge.svg)
 
 #### Requirements:
-* PHP : 8.\*
+* PHP : 8.1 / 8.2
 * Laravel: 9.\* / 10.\*
 
 ### Installation
-do either of this methods below.
+Do either of this methods below.
 * via shell 
 ```shell script
 composer require dentro/laravel-patcher
